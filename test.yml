@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: "Installing splunk"
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items: apps

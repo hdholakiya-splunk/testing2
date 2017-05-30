@@ -1,0 +1,34 @@
+---
+- hosts: {{ host_tag }}
+
+  tasks:
+
+#ES APP Download {{ ES_APP_NAME }} = splunk-enterprise-security_452.spl
+
+  - name: "Downloading ES APP"
+    s3:
+      bucket: adsk-eis-splunk-binaries
+      object: splunk-apps/splunk-enterprise-security_452.spl
+      dest: /tmp/splunk-enterprise-security_452.spl
+      mode: get
+
+#installing splunk
+
+  - name: "Unarchive ES APP"
+    unarchive:
+      src: /tmp/splunk-enterprise-security_452.spl
+      dest: /opt/splunk/etc/apps
+      copy: no
+  
+  - name: "Restart splunk"
+    action: command /opt/splunk/bin/splunk restart
+
+  - name: "Install ES APP"
+    action: command /opt/splunk/bin/splunk search '| testessinstall' -auth admin:changeme
+
+  - name: "Restart splunk"
+    action: command /opt/splunk/bin/splunk restart
+
+  - name: "Remove spl file from tmp"
+    action: command rm -rf /tmp/splunk-enterprise-security_452.spl
+

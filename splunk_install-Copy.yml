@@ -1,0 +1,25 @@
+---
+
+- hosts: localhost
+  #remote_user: ec2-user
+
+  tasks:
+ 
+  - name: "Downloading splunk"
+    s3:
+      bucket: adsk-eis-splunk-binaries
+      object: splunk-server/splunk-6.3.3-f44afce176d0-linux-2.6-x86_64.rpm
+      dest: /opt/splunk-6.3.3-f44afce176d0-linux-2.6-x86_64.rpm
+      mode: get
+
+#installing splunk
+
+  - name: "Installing splunk"
+    yum:
+      name: /opt/splunk-6.3.3-f44afce176d0-linux-2.6-x86_64.rpm
+      state: present
+
+#Starting splunk
+
+  - name: "Start splunk"
+    action: command /opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt
